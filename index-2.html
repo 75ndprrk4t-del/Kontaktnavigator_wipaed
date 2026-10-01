@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kontaktnavigator Wirtschaftspädagogik</title>
+  <style>
+    :root {
+      --uni-blue: #235179;
+      --uni-blue-hover: #3E85C6;
+      --uni-blue-light: #eef5fa;
+      --text: #222;
+      --muted: #5d646b;
+      --border: #d4dde5;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: transparent;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+    }
+    body { padding: 4px; }
+    .navigator { width: 100%; max-width: 1050px; margin: 0 auto; }
+    .intro { margin: 0 0 16px; color: var(--muted); line-height: 1.5; }
+    .topic-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 12px;
+    }
+    .topic-button {
+      min-height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 17px 18px;
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--uni-blue);
+      border-radius: 4px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    }
+    .topic-button:hover { background: var(--uni-blue-light); }
+    .topic-button:focus-visible,
+    .action:focus-visible,
+    .back-button:focus-visible {
+      outline: 3px solid #111;
+      outline-offset: 3px;
+    }
+    .topic-title { font-weight: 700; line-height: 1.3; }
+    .topic-arrow { color: var(--uni-blue); font-size: 1.55rem; font-weight: 700; }
+    .result {
+      display: none;
+      margin-top: 18px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-top: 6px solid var(--uni-blue);
+      border-radius: 4px;
+      background: #fff;
+      box-shadow: 0 3px 12px rgba(0,0,0,.08);
+    }
+    .result.is-visible { display: block; }
+    .result-kicker {
+      margin: 0 0 5px;
+      color: var(--muted);
+      font-size: .8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .result h2 {
+      margin: 0 0 10px;
+      color: var(--uni-blue);
+      font-size: 1.35rem;
+    }
+    .result-description { margin: 0 0 16px; line-height: 1.55; }
+    .contact-details {
+      margin: 0 0 18px;
+      padding: 15px 16px;
+      background: #f6f8fa;
+      border-radius: 4px;
+      line-height: 1.55;
+    }
+    .contact-details strong { display: block; margin-bottom: 3px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .action, .back-button {
+      min-height: 44px;
+      padding: 10px 15px;
+      border-radius: 4px;
+      font: inherit;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .action-primary {
+      border: 1px solid var(--uni-blue);
+      background: var(--uni-blue);
+      color: white;
+    }
+    .action-primary:hover { background: var(--uni-blue-hover); }
+    .action-secondary, .back-button {
+      border: 1px solid var(--uni-blue);
+      background: white;
+      color: var(--uni-blue);
+    }
+    .action-secondary:hover, .back-button:hover { background: var(--uni-blue-light); }
+    .back-button { margin-top: 16px; }
+    .note { margin: 15px 0 0; color: var(--muted); font-size: .86rem; }
+    @media (max-width: 700px) {
+      .topic-grid { grid-template-columns: 1fr; }
+      .actions { flex-direction: column; }
+      .action { width: 100%; text-align: center; }
+    }
+  </style>
+  <script src="https://www.uni-bamberg.de/_frontend/static/iframeResizer.contentWindow.min.js"></script>
+</head>
+<body>
+<main class="navigator">
+  <p class="intro">Wählen Sie Ihr Anliegen aus. Der Navigator zeigt Ihnen die passende Anlaufstelle und – soweit vorhanden – weiterführende Informationen.</p>
+
+  <div class="topic-grid" id="topicGrid">
+    <button class="topic-button" data-topic="thesis"><span class="topic-title">Abschlussarbeit</span><span class="topic-arrow">›</span></button>
+    <button class="topic-button" data-topic="application"><span class="topic-title">Bewerbung Master WiPäd / Eignungsverfahren</span><span class="topic-arrow">›</span></button>
+    <button class="topic-button" data-topic="hsg"><span class="topic-title">Hochschulgruppe / studentische Anliegen</span><span class="topic-arrow">›</span></button>
+    <button class="topic-button" data-topic="accessibility"><span class="topic-title">Studium mit Beeinträchtigung / Nachteilsausgleich</span><span class="topic-arrow">›</span></button>
+    <button class="topic-button" data-topic="orientation"><span class="topic-title">Studienzweifel / Orientierungshilfe</span><span class="topic-arrow">›</span></button>
+    <button class="topic-button" data-topic="exams"><span class="topic-title">FlexNow / Prüfungs- oder Lehrveranstaltungsanmeldung</span><span class="topic-arrow">›</span></button>
+    <button class="topic-button" data-topic="office"><span class="topic-title">Sekretariat / organisatorische Frage</span><span class="topic-arrow">›</span></button>
+    <button class="topic-button" data-topic="advising"><span class="topic-title">Studienberatung WiPäd / Zweitfächer / Umschreibung</span><span class="topic-arrow">›</span></button>
+    <button class="topic-button" data-topic="advisingwi"><span class="topic-title">Studienberatung Master WiPäd/WI</span><span class="topic-arrow">›</span></button>
+    <button class="topic-button" data-topic="schools"><span class="topic-title">Universitätsschulen / Praxisphase</span><span class="topic-arrow">›</span></button>
+    <button class="topic-button" data-topic="unknown"><span class="topic-title">Ich bin nicht sicher, wer zuständig ist</span><span class="topic-arrow">›</span></button>
+  </div>
+
+  <section class="result" id="result" aria-live="polite" tabindex="-1">
+    <p class="result-kicker">Ihre Anlaufstelle</p>
+    <h2 id="resultTitle"></h2>
+    <p class="result-description" id="resultDescription"></p>
+    <div class="contact-details" id="contactDetails"></div>
+    <div class="actions" id="actions"></div>
+    <button class="back-button" id="backButton">Anderes Anliegen auswählen</button>
+    <p class="note">Die Zuordnung basiert auf den veröffentlichten Zuständigkeiten des Kontaktnavigators der Wirtschaftspädagogik.</p>
+  </section>
+</main>
+
+<script>
+const contacts = {
+  thesis: {
+    title: "Abschlussarbeiten Wirtschaftspädagogik",
+    description: "Für Fragen zum Prozess der Anmeldung Ihrer Abschlussarbeit und zur Themenbestätigung.",
+    details: "<strong>Kontakt Abschlussarbeiten</strong>abschlussarbeiten.wipaed@uni-bamberg.de",
+    email: "abschlussarbeiten.wipaed@uni-bamberg.de",
+    info: "https://www.uni-bamberg.de/wipaed/studium/waehrend-des-studiums/seminar-und-abschlussarbeiten/"
+  },
+  application: {
+    title: "Bewerbung Master Wirtschaftspädagogik",
+    description: "Für Interessierte am Masterstudiengang Wirtschaftspädagogik sowie für Fragen zum Eignungsverfahren.",
+    details: "<strong>M. Sc. Sabrina Sailer-Frank</strong>Kärntenstraße 7, KÄ7/00.39<br>96052 Bamberg<br>Tel.: +49 951 863-2763<br>bewerbung.wipaed@uni-bamberg.de",
+    email: "bewerbung.wipaed@uni-bamberg.de",
+    phone: "+499518632763",
+    info: "https://www.uni-bamberg.de/ma-wipaed/bewerbung-und-einschreibung/"
+  },
+  hsg: {
+    title: "Hochschulgruppe Wirtschaftspädagogik",
+    description: "Für studentische Anliegen und Fragen rund um das WiPäd-Studium aus studentischer Perspektive.",
+    details: "<strong>Hochschulgruppe (HSG) Wirtschaftspädagogik</strong>hsg.wipaed@uni-bamberg.de",
+    email: "hsg.wipaed@uni-bamberg.de",
+    info: "https://www.uni-bamberg.de/wipaed/studium/waehrend-des-studiums/hochschulgruppe/"
+  },
+  accessibility: {
+    title: "Kontaktstelle für Studierende mit Beeinträchtigung",
+    description: "Hier finden Sie Informationen und Ansprechpersonen unter anderem zu Nachteilsausgleich und Hilfsmitteln bei Prüfungen.",
+    details: "<strong>Beauftragter für Studierende mit Behinderung / chronischer Erkrankung</strong>Die aktuellen Kontaktdaten finden Sie auf der zentralen Universitätsseite.",
+    info: "https://www.uni-bamberg.de/bafbs/"
+  },
+  orientation: {
+    title: "Orientierungshilfe",
+    description: "Für Studierende, die an ihrem Studium zweifeln und Interesse daran haben, in eine kaufmännische Ausbildung hineinzuschnuppern.",
+    details: "<strong>Orientierungshilfe Wirtschaftspädagogik</strong>orientierungshilfe.wipaed-p@uni-bamberg.de",
+    email: "orientierungshilfe.wipaed-p@uni-bamberg.de"
+  },
+  exams: {
+    title: "Prüfungs- und Lehrveranstaltungsanmeldung in FlexNow",
+    description: "Für Anfragen und Probleme rund um die Anmeldung oder Abmeldung von Lehrveranstaltungen und Prüfungen in FlexNow.",
+    details: "<strong>Tatiana Dulap</strong>Kärntenstraße 7, KÄ7/00.41<br>96052 Bamberg<br>Tel.: +49 951 863-2761<br>pruefungen.wipaed@uni-bamberg.de",
+    email: "pruefungen.wipaed@uni-bamberg.de",
+    phone: "+499518632761"
+  },
+  office: {
+    title: "Sekretariat Wirtschaftspädagogik",
+    description: "Für organisatorische Fragen und sonstige organisatorische Herausforderungen.",
+    details: "<strong>Ulla Kuscher</strong>Kärntenstraße 7, KÄ7/00.41<br>96052 Bamberg<br>Dienstag und Donnerstag, 9:00–10:30 Uhr<br>Tel.: +49 951 863-2726<br>sekretariat.wipaed@uni-bamberg.de",
+    email: "sekretariat.wipaed@uni-bamberg.de",
+    phone: "+499518632726"
+  },
+  advising: {
+    title: "Fachstudienberatung Wirtschaftspädagogik",
+    description: "Für Fragen zum WiPäd-Studium, zu Zweitfächern, Umschreibungen, Nachweisen sowie studienorganisatorischen und prüfungsrechtlichen Fragen.",
+    details: "<strong>Dr. Anne Wagner</strong>Kärntenstraße 7, KÄ7/00.42<br>96052 Bamberg<br>Tel.: +49 951 863-2843<br>studienberatung.wipaed@uni-bamberg.de",
+    email: "studienberatung.wipaed@uni-bamberg.de",
+    phone: "+499518632843",
+    info: "https://www.uni-bamberg.de/wipaed/studium/service-desk/studienberatung/"
+  },
+  advisingwi: {
+    title: "Fachstudienberatung Wirtschaftspädagogik/WI",
+    description: "Für Fragen rund um den Masterstudiengang Wirtschaftspädagogik mit Wirtschaftsinformatik.",
+    details: "<strong>M. Sc. Philipp Schlottmann</strong>Kärntenstraße 7, KÄ7/00.39<br>96052 Bamberg<br>Tel.: +49 951 863-2784<br>studienberatung.wipaed-wi@uni-bamberg.de",
+    email: "studienberatung.wipaed-wi@uni-bamberg.de",
+    phone: "+499518632784",
+    info: "https://www.uni-bamberg.de/ma-wipaed-wi/"
+  },
+  schools: {
+    title: "Universitätsschulen",
+    description: "Für Fragen zur Kooperation mit den Universitätsschulen und zur Praxisphase an den Universitätsschulen.",
+    details: "<strong>Dr. Anne Wagner</strong>Kärntenstraße 7, KÄ7/00.42<br>96052 Bamberg<br>Tel.: +49 951 863-2843<br>unischulen.wipaed@uni-bamberg.de",
+    email: "unischulen.wipaed@uni-bamberg.de",
+    phone: "+499518632843",
+    info: "https://www.uni-bamberg.de/wipaed/studium/praxisverzahnung/"
+  },
+  unknown: {
+    title: "Fachstudienberatung Wirtschaftspädagogik",
+    description: "Wenn Sie Ihr Anliegen nicht eindeutig zuordnen können, ist die Fachstudienberatung eine gute erste Anlaufstelle.",
+    details: "<strong>Dr. Anne Wagner</strong>Kärntenstraße 7, KÄ7/00.42<br>96052 Bamberg<br>Tel.: +49 951 863-2843<br>studienberatung.wipaed@uni-bamberg.de",
+    email: "studienberatung.wipaed@uni-bamberg.de",
+    phone: "+499518632843",
+    info: "https://www.uni-bamberg.de/wipaed/studium/service-desk/studienberatung/"
+  }
+};
+
+const grid = document.getElementById("topicGrid");
+const result = document.getElementById("result");
+const title = document.getElementById("resultTitle");
+const description = document.getElementById("resultDescription");
+const details = document.getElementById("contactDetails");
+const actions = document.getElementById("actions");
+
+function showContact(key) {
+  const c = contacts[key];
+  if (!c) return;
+
+  title.textContent = c.title;
+  description.textContent = c.description;
+  details.innerHTML = c.details;
+  actions.innerHTML = "";
+
+  if (c.email) {
+    const a = document.createElement("a");
+    a.className = "action action-primary";
+    a.href = "mailto:" + c.email;
+    a.textContent = "E-Mail schreiben";
+    actions.appendChild(a);
+  }
+  if (c.phone) {
+    const a = document.createElement("a");
+    a.className = "action action-secondary";
+    a.href = "tel:" + c.phone;
+    a.textContent = "Anrufen";
+    actions.appendChild(a);
+  }
+  if (c.info) {
+    const a = document.createElement("a");
+    a.className = c.email ? "action action-secondary" : "action action-primary";
+    a.href = c.info;
+    a.target = "_top";
+    a.textContent = "Weitere Informationen";
+    actions.appendChild(a);
+  }
+
+  result.classList.add("is-visible");
+  result.focus({preventScroll:true});
+  result.scrollIntoView({behavior:"smooth", block:"nearest"});
+}
+
+grid.addEventListener("click", function(e) {
+  const button = e.target.closest("[data-topic]");
+  if (button) showContact(button.dataset.topic);
+});
+
+document.getElementById("backButton").addEventListener("click", function() {
+  result.classList.remove("is-visible");
+  document.querySelector(".topic-button").focus();
+});
+</script>
+</body>
+</html>
+
+<!--
+README / WARTUNGSHINWEIS
+Stand: 01.10.2026
+
+Referenz:
+https://www.uni-bamberg.de/wipaed/studium/service-desk/kontaktnavigator/
+
+Enthalten:
+- Abschlussarbeiten
+- Bewerbung Master WiPäd / Eignungsverfahren
+- Hochschulgruppe
+- Studium mit Beeinträchtigung / Nachteilsausgleich
+- Orientierungshilfe
+- FlexNow / Prüfungs- und Lehrveranstaltungsanmeldung
+- Sekretariat
+- Studienberatung WiPäd
+- Studienberatung WiPäd/WI
+- Universitätsschulen
+- Auffangoption "Ich bin nicht sicher"
+
+Pflege:
+Die Kontaktdaten stehen im JavaScript-Objekt "contacts".
+Dort lassen sich Mail, Telefon, Text und Info-Link ändern.
+
+TYPO3:
+Bei "Automatic Size" -> "iFrame Resizer" auswählen.
+Das nötige Script ist bereits im <head> eingebunden.
+-->

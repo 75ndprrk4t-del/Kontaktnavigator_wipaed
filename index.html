@@ -1,3 +1,37 @@
+<!--
+README / WARTUNGSHINWEIS
+Stand: 13.10.2026
+
+Hallo :D
+Das ist der Kontaktnavigator der Wirtschaftspädagogik.
+
+WIE DAS GANZE AUFGEBAUT IST
+1. Oben im HTML stehen Gestaltung und Layout im <style>-Block.
+2. Die sichtbaren Auswahlfelder stehen im Bereich mit der ID "topicGrid".
+3. Die eigentlichen Kontaktdaten stehen weiter unten im JavaScript-Objekt "contacts".
+4. Jeder Button hat ein data-topic. Dieser Wert muss exakt zu einem Eintrag im Objekt "contacts" passen.
+5. Beim Klick wird der passende Kontakt eingeblendet. Mail, Telefon und Infoseite werden automatisch als Schaltflächen ergänzt.
+
+EINBINDUNG IN TYPO3
+Die veröffentlichte HTML-Seite wird in TYPO3 über ein iFrame eingebunden. Die konkrete iFrame-URL wird im TYPO3-Inhaltselement gepflegt und steht deshalb nicht in dieser Datei.
+
+Wichtig in TYPO3:
+- Beim iFrame die veröffentlichte URL dieser Seite eintragen.
+- Bei "Automatic Size" die Option "iFrame Resizer" auswählen.
+- Diese Einstellung ist wichtig, weil sich die Höhe des Navigators nach einem Klick verändert. Ohne automatische Größenanpassung kann Inhalt abgeschnitten werden oder es entstehen unschöne Scrollbalken im iFrame.
+- Das dazu nötige Script ist hier im <head> eingebunden: iframeResizer.contentWindow.min.js. Bitte nicht entfernen, solange TYPO3 mit "iFrame Resizer" arbeitet.
+
+SO WIRD AKTUALISIERT
+1. Im Objekt "contacts" Namen, Funktionsmail, Telefon, Raum, Beschreibung und Link anpassen.
+2. Falls ein neues Thema hinzukommt, zusätzlich oben im "topicGrid" einen Button mit passendem data-topic anlegen.
+3. Datei speichern und im Repository aktualisieren.
+4. Prüfen, ob die veröffentlichte URL weiterhin dieselbe ist. Nur wenn sich die URL geändert hat, muss auch das iFrame in TYPO3 angepasst werden.
+5. Anschließend testen: Desktop, Smartphone, Tastaturbedienung, Mail-Schaltflächen, Telefon-Schaltflächen und alle weiterführenden Links.
+
+Liebe Grüße
+Stefan
+-->
+
 <!DOCTYPE html>
 <html lang="de">
 <head>
@@ -111,7 +145,6 @@
     }
     .action-secondary:hover, .back-button:hover { background: var(--uni-blue-light); }
     .back-button { margin-top: 16px; }
-    .note { margin: 15px 0 0; color: var(--muted); font-size: .86rem; }
     @media (max-width: 700px) {
       .topic-grid { grid-template-columns: 1fr; }
       .actions { flex-direction: column; }
@@ -122,15 +155,18 @@
 </head>
 <body>
 <main class="navigator">
-  <p class="intro">Wählen Sie Ihr Anliegen aus. Der Navigator zeigt Ihnen die passende Anlaufstelle und – soweit vorhanden – weiterführende Informationen.</p>
+  <p class="intro">Wählen Sie Ihr Anliegen aus. Der Navigator zeigt Ihnen die passende Anlaufstelle und, soweit vorhanden, weiterführende Informationen.</p>
 
   <div class="topic-grid" id="topicGrid">
     <button class="topic-button" data-topic="thesis"><span class="topic-title">Abschlussarbeit</span><span class="topic-arrow">›</span></button>
     <button class="topic-button" data-topic="application"><span class="topic-title">Bewerbung Master WiPäd / Eignungsverfahren</span><span class="topic-arrow">›</span></button>
+    <button class="topic-button" data-topic="applicationwi"><span class="topic-title">Bewerbung Master WiPäd/WI / Eignungsverfahren</span><span class="topic-arrow">›</span></button>
     <button class="topic-button" data-topic="hsg"><span class="topic-title">Hochschulgruppe / studentische Anliegen</span><span class="topic-arrow">›</span></button>
     <button class="topic-button" data-topic="accessibility"><span class="topic-title">Studium mit Beeinträchtigung / Nachteilsausgleich</span><span class="topic-arrow">›</span></button>
     <button class="topic-button" data-topic="orientation"><span class="topic-title">Studienzweifel / Orientierungshilfe</span><span class="topic-arrow">›</span></button>
     <button class="topic-button" data-topic="exams"><span class="topic-title">FlexNow / Prüfungs- oder Lehrveranstaltungsanmeldung</span><span class="topic-arrow">›</span></button>
+    <button class="topic-button" data-topic="requests"><span class="topic-title">Vorkorrektur / Nachkorrektur / Anträge und Formulare</span><span class="topic-arrow">›</span></button>
+    <button class="topic-button" data-topic="recognition"><span class="topic-title">Anerkennung / Learning Agreement / Auslandsstudium</span><span class="topic-arrow">›</span></button>
     <button class="topic-button" data-topic="office"><span class="topic-title">Sekretariat / organisatorische Frage</span><span class="topic-arrow">›</span></button>
     <button class="topic-button" data-topic="advising"><span class="topic-title">Studienberatung WiPäd / Zweitfächer / Umschreibung</span><span class="topic-arrow">›</span></button>
     <button class="topic-button" data-topic="advisingwi"><span class="topic-title">Studienberatung Master WiPäd/WI</span><span class="topic-arrow">›</span></button>
@@ -159,11 +195,18 @@ const contacts = {
   },
   application: {
     title: "Bewerbung Master Wirtschaftspädagogik",
-    description: "Für Interessierte am Masterstudiengang Wirtschaftspädagogik sowie für Fragen zum Eignungsverfahren.",
-    details: "<strong>M. Sc. Sabrina Sailer-Frank</strong>Kärntenstraße 7, KÄ7/00.39<br>96052 Bamberg<br>Tel.: +49 951 863-2763<br>bewerbung.wipaed@uni-bamberg.de",
+    description: "Für Fragen zur Bewerbung und zum Eignungsverfahren des regulären M.Sc. Wirtschaftspädagogik.",
+    details: "<strong>Dr. Christian Schadt</strong>Kärntenstraße 7, KÄ7/00.23<br>96052 Bamberg<br>Tel.: +49 951 863-2785<br>bewerbung.wipaed@uni-bamberg.de",
     email: "bewerbung.wipaed@uni-bamberg.de",
-    phone: "+499518632763",
+    phone: "+499518632785",
     info: "https://www.uni-bamberg.de/ma-wipaed/bewerbung-und-einschreibung/"
+  },
+  applicationwi: {
+    title: "Bewerbung Master Wirtschaftspädagogik/WI",
+    description: "Für Fragen zur Bewerbung und zum Auswahlprozess des M.Sc. Wirtschaftspädagogik mit Schwerpunkt Wirtschaftsinformatik.",
+    details: "<strong>Funktionsadresse Bewerbung</strong>bewerbung.wipaed@uni-bamberg.de",
+    email: "bewerbung.wipaed@uni-bamberg.de",
+    info: "https://www.uni-bamberg.de/ma-wipaed-wi/bewerbung-und-einschreibung/"
   },
   hsg: {
     title: "Hochschulgruppe Wirtschaftspädagogik",
@@ -173,9 +216,10 @@ const contacts = {
     info: "https://www.uni-bamberg.de/wipaed/studium/waehrend-des-studiums/hochschulgruppe/"
   },
   accessibility: {
-    title: "Kontaktstelle für Studierende mit Beeinträchtigung",
-    description: "Hier finden Sie Informationen und Ansprechpersonen unter anderem zu Nachteilsausgleich und Hilfsmitteln bei Prüfungen.",
-    details: "<strong>Beauftragter für Studierende mit Behinderung / chronischer Erkrankung</strong>Die aktuellen Kontaktdaten finden Sie auf der zentralen Universitätsseite.",
+    title: "Kontaktstelle Studium und Behinderung",
+    description: "Für Beratung und Unterstützung bei Behinderung oder chronischer Erkrankung, unter anderem zum Nachteilsausgleich und zu Hilfsmitteln bei Prüfungen.",
+    details: "<strong>Kontaktstelle Studium und Behinderung</strong>bafbs@uni-bamberg.de",
+    email: "bafbs@uni-bamberg.de",
     info: "https://www.uni-bamberg.de/bafbs/"
   },
   orientation: {
@@ -191,10 +235,25 @@ const contacts = {
     email: "pruefungen.wipaed@uni-bamberg.de",
     phone: "+499518632761"
   },
+  requests: {
+    title: "Anträge und Formulare",
+    description: "Für Vorkorrekturen, Nachkorrekturen und weitere studienbezogene Anträge. Die Voraussetzungen und Fristen stehen auf der Seite Anträge und Formulare.",
+    details: "<strong>Sekretariat Wirtschaftspädagogik</strong>sekretariat.wipaed@uni-bamberg.de",
+    email: "sekretariat.wipaed@uni-bamberg.de",
+    phone: "+499518632726",
+    info: "https://www.uni-bamberg.de/wipaed/studium/service-desk/antraege-und-formulare/"
+  },
+  recognition: {
+    title: "Anerkennung, Learning Agreement und Auslandsstudium",
+    description: "Für die inhaltliche Anerkennung wirtschaftspädagogischer Module und für Learning Agreements. Formale Anerkennungen werden anschließend mit dem zuständigen Prüfungsausschuss abgestimmt.",
+    details: "<strong>Fachstudienberatung Wirtschaftspädagogik</strong>studienberatung.wipaed@uni-bamberg.de",
+    email: "studienberatung.wipaed@uni-bamberg.de",
+    info: "https://www.uni-bamberg.de/wipaed/studium/service-desk/studienberatung/"
+  },
   office: {
     title: "Sekretariat Wirtschaftspädagogik",
     description: "Für organisatorische Fragen und sonstige organisatorische Herausforderungen.",
-    details: "<strong>Ulla Kuscher</strong>Kärntenstraße 7, KÄ7/00.41<br>96052 Bamberg<br>Dienstag und Donnerstag, 9:00–10:30 Uhr<br>Tel.: +49 951 863-2726<br>sekretariat.wipaed@uni-bamberg.de",
+    details: "<strong>Ulla Kuscher</strong>Kärntenstraße 7, KÄ7/00.41<br>96052 Bamberg<br>Dienstag und Donnerstag, 9:00 bis 10:30 Uhr<br>Tel.: +49 951 863-2726<br>sekretariat.wipaed@uni-bamberg.de",
     email: "sekretariat.wipaed@uni-bamberg.de",
     phone: "+499518632726"
   },
@@ -209,7 +268,7 @@ const contacts = {
   advisingwi: {
     title: "Fachstudienberatung Wirtschaftspädagogik/WI",
     description: "Für Fragen rund um den Masterstudiengang Wirtschaftspädagogik mit Wirtschaftsinformatik.",
-    details: "<strong>M. Sc. Philipp Schlottmann</strong>Kärntenstraße 7, KÄ7/00.39<br>96052 Bamberg<br>Tel.: +49 951 863-2784<br>studienberatung.wipaed-wi@uni-bamberg.de",
+    details: "<strong>Dr. Philipp Schlottmann</strong>Kärntenstraße 7, KÄ7/00.39<br>96052 Bamberg<br>Tel.: +49 951 863-2784<br>studienberatung.wipaed-wi@uni-bamberg.de",
     email: "studienberatung.wipaed-wi@uni-bamberg.de",
     phone: "+499518632784",
     info: "https://www.uni-bamberg.de/ma-wipaed-wi/"
@@ -224,10 +283,9 @@ const contacts = {
   },
   unknown: {
     title: "Fachstudienberatung Wirtschaftspädagogik",
-    description: "Wenn Sie Ihr Anliegen nicht eindeutig zuordnen können, ist die Fachstudienberatung eine gute erste Anlaufstelle.",
-    details: "<strong>Dr. Anne Wagner</strong>Kärntenstraße 7, KÄ7/00.42<br>96052 Bamberg<br>Tel.: +49 951 863-2843<br>studienberatung.wipaed@uni-bamberg.de",
+    description: "Wenn Sie Ihr Anliegen nicht eindeutig zuordnen können, ist die allgemeine Fachstudienberatung eine gute erste Anlaufstelle.",
+    details: "<strong>Allgemeine Fachstudienberatung</strong>studienberatung.wipaed@uni-bamberg.de",
     email: "studienberatung.wipaed@uni-bamberg.de",
-    phone: "+499518632843",
     info: "https://www.uni-bamberg.de/wipaed/studium/service-desk/studienberatung/"
   }
 };
@@ -255,6 +313,7 @@ function showContact(key) {
     a.textContent = "E-Mail schreiben";
     actions.appendChild(a);
   }
+
   if (c.phone) {
     const a = document.createElement("a");
     a.className = "action action-secondary";
@@ -262,6 +321,7 @@ function showContact(key) {
     a.textContent = "Anrufen";
     actions.appendChild(a);
   }
+
   if (c.info) {
     const a = document.createElement("a");
     a.className = c.email ? "action action-secondary" : "action action-primary";
@@ -288,32 +348,3 @@ document.getElementById("backButton").addEventListener("click", function() {
 </script>
 </body>
 </html>
-
-<!--
-README / WARTUNGSHINWEIS
-Stand: 01.10.2026
-
-Referenz:
-https://www.uni-bamberg.de/wipaed/studium/service-desk/kontaktnavigator/
-
-Enthalten:
-- Abschlussarbeiten
-- Bewerbung Master WiPäd / Eignungsverfahren
-- Hochschulgruppe
-- Studium mit Beeinträchtigung / Nachteilsausgleich
-- Orientierungshilfe
-- FlexNow / Prüfungs- und Lehrveranstaltungsanmeldung
-- Sekretariat
-- Studienberatung WiPäd
-- Studienberatung WiPäd/WI
-- Universitätsschulen
-- Auffangoption "Ich bin nicht sicher"
-
-Pflege:
-Die Kontaktdaten stehen im JavaScript-Objekt "contacts".
-Dort lassen sich Mail, Telefon, Text und Info-Link ändern.
-
-TYPO3:
-Bei "Automatic Size" -> "iFrame Resizer" auswählen.
-Das nötige Script ist bereits im <head> eingebunden.
--->
